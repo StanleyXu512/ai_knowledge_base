@@ -4,16 +4,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 知识库问答</title>
+    <title>Stanley 智能问答</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="static/js/marked.min.js"></script>
 </head>
 
 <body>
     <div id="chat-container">
-        <div id="chat-header">AI 知识库</div>
+        <div id="chat-header">Stanley 智能问答</div>
         <div id="chat-body">
             <!-- 初始欢迎消息 -->
-            <div class="answer">您好！我是AI助手，请问有什么可以帮您？</div>
+            <div class="answer">
+                <div class="bot-avatar"></div>
+                您好！我是AI助手，请问有什么可以帮您？
+            </div>
         </div>
         <div id="input-area">
             <input type="text" id="question-input" placeholder="请输入您的问题...">

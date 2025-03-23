@@ -33,34 +33,34 @@ body {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    position: relative; /* 添加相对定位 */
 }
 
-.user-message {
-    background-color: #0077cc;
-    color: white;
-    padding: 12px 16px;
-    border-radius: 15px;
-    max-width: 70%;
-    align-self: flex-end;
-    margin-left: 30%;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    position: relative;
-    display: flex;
-    align-items: flex-end;
-    gap: 6px;
-    /* 移除 flex-direction: row-reverse; */
-}
 
 .user-avatar {
-    width: 32px;
-    height: 32px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
     background-color: #fff;
     background-image: url('/static/images/user-avatar.png');
     background-size: cover;
-    /* 调整边距使头像在右侧 */
-    margin-left: 8px;
-    margin-right: -8px;
+    position: absolute; /* 绝对定位 */
+    right: -40px; /* 调整到消息框右侧 */
+    top: 50%; /* 垂直居中 */
+    transform: translateY(-50%);
+}
+
+.bot-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: #fff;
+    background-image: url('/static/images/bot-avatar.png');
+    background-size: cover;
+    position: absolute;
+    left: -60px; /* 从 -80px 调整到 -50px，更靠近聊天内容 */
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .answer {
@@ -70,36 +70,69 @@ body {
     max-width: 70%;
     align-self: flex-start;
     margin-right: 30%;
+    margin-left: 60px; /* 从 72px 调整到 50px，更靠近头像 */
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     position: relative;
     display: flex;
-    align-items: flex-end;
+    flex-direction: column;
+    align-items: flex-start;
     gap: 6px;
-    /* 确保头像和内容正确显示 */
-}
-
-.bot-avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background-color: #fff;
-    background-image: url('/static/images/bot-avatar.png');
-    background-size: cover;
-    margin-left: -8px;
-    /* 确保头像始终显示 */
-    display: block !important;
 }
 
 .answer::before {
     content: '';
     position: absolute;
     left: -8px;
-    top: 12px;
+    top: 50%;
+    transform: translateY(-50%);
     width: 0;
     height: 0;
     border-top: 8px solid transparent;
     border-bottom: 8px solid transparent;
     border-right: 8px solid #f0f0f0;
+}
+
+.user-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: #fff;
+    background-image: url('/static/images/user-avatar.png');
+    background-size: cover;
+    position: absolute;
+    right: -60px; /* 从-40px调整到-60px，增加与聊天框的距离 */
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+
+.user-message {
+    background-color: #0077cc;
+    color: white;
+    padding: 12px 16px;
+    border-radius: 15px;
+    max-width: 70%;
+    align-self: flex-end;
+    margin-left: 30%;
+    margin-right: 62px; /* 从57px增加到62px，确保箭头不被遮挡 */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.user-message::before {
+    content: '';
+    position: absolute;
+    right: -8px;
+    top: 50%; /* 改为垂直居中 */
+    transform: translateY(-50%); /* 添加垂直居中 */
+    width: 0;
+    height: 0;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-left: 8px solid #0077cc;
 }
 
 #question-input {
@@ -171,4 +204,137 @@ button {
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
+}
+
+.thinking.reasoning-process {
+    width: 100%;
+    clear: both;
+    margin-bottom: 10px;
+}
+
+.message-content {
+    width: 100%;
+    clear: both;
+    margin-top: 10px;
+}
+
+.reasoning-process {
+    background-color: #f5f5f5;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    font-style: italic;
+    color: #666;
+    transition: all 0.3s ease;
+}
+
+.reasoning-text {
+    color: #333;
+    font-weight: bold;
+}
+
+/* 添加思考完成后的样式 */
+.reasoning-process.completed {
+    opacity: 0.7;
+    color: #999;
+    background-color: #f0f0f0;
+    font-style: normal;
+    border-left: 3px solid #ddd;
+    padding-left: 12px;
+}
+
+.completed-reasoning, .conclusion {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.reasoning-divider {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.completed-reasoning h1, .conclusion h1 {
+    font-size: 1.5em;
+    margin: 1em 0;
+}
+
+.completed-reasoning h2, .conclusion h2 {
+    font-size: 1.3em;
+    margin: 0.8em 0;
+}
+
+.completed-reasoning p, .conclusion p {
+    margin: 0.5em 0;
+}
+
+.completed-reasoning code, .conclusion code {
+    background-color: #f5f5f5;
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+    font-family: Consolas, monospace;
+}
+
+.completed-reasoning pre, .conclusion pre {
+    background-color: #f5f5f5;
+    padding: 1em;
+    border-radius: 3px;
+    overflow-x: auto;
+}
+
+.completed-reasoning blockquote, .conclusion blockquote {
+    border-left: 4px solid #ddd;
+    padding-left: 1em;
+    color: #666;
+    margin: 1em 0;
+}
+
+.reasoning-divider {
+    color: #666;
+    font-weight: bold;
+    margin: 15px 0;
+    padding: 8px 0;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+}
+
+.conclusion {
+    color: #333;
+    font-weight: normal;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+}
+
+.completed-reasoning h3, .conclusion h3 {
+    font-size: 1.2em;
+    margin: 0.8em 0;
+}
+
+.completed-reasoning ul, .conclusion ul,
+.completed-reasoning ol, .conclusion ol {
+    margin: 0.5em 0;
+    padding-left: 1.5em;
+}
+
+.completed-reasoning li, .conclusion li {
+    margin: 0.3em 0;
+}
+
+.reasoning-title {
+    color: #999;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.completed-reasoning {
+    color: #999;
+    font-size: 14px;
+    line-height: 1.6;
 }
