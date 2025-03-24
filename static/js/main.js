@@ -2,12 +2,23 @@
 let conversationHistory = [];
 
 // 添加你的 API Key
-const API_KEY = 'de7e140af56243079654123108766f76'; // 请替换为你的实际 API Key
-const API_URL = 'https://wishub-x1.ctyun.cn/v1/chat/completions';
+const API_KEY = 'sk-252024d0066d4fcf80e490647a4104c6'; // 请替换为你的实际 API Key
+const API_URL = 'https://api.deepseek.com/chat/completions';
+
+let isStreaming = false;
+let abortController = null;
+let reader = null;  // 添加reader变量
 
 async function submitQuestion() {
     const question = document.getElementById('question-input').value;
     if (question.trim() === '') return;
+
+    // 切换按钮状态
+    const submitBtn = document.getElementById('submit-btn');
+    submitBtn.textContent = '停止';
+    submitBtn.onclick = stopStreaming;
+    isStreaming = true;
+    abortController = new AbortController();
 
     // 添加用户消息
     const userMessage = document.createElement('div');
@@ -71,7 +82,7 @@ async function submitQuestion() {
                     'Accept': 'text/event-stream'
                 },
                 body: JSON.stringify({
-                    model: 'DeepSeek-R1-英伟达版',
+                    model: 'deepseek-reasoner',
                     messages: conversationHistory,
                     temperature: 0.7,
                     max_tokens: 1000,
@@ -106,9 +117,12 @@ async function submitQuestion() {
             let result = '';
             let isThinking = true;
 
-            while (true) {
+            while (isStreaming) {
                 const { done, value } = await reader.read();
-                if (done) break;
+                if (done) {
+                    resetSubmitButton();  // 添加这行代码
+                    break;
+                }
 
                 const chunk = decoder.decode(value);
                 result += chunk;
@@ -177,6 +191,8 @@ async function submitQuestion() {
                                 
                                 // 移除思考过程容器
                                 systemMessage.removeChild(thinkingContainer);
+                                
+                                resetSubmitButton();  // 添加这行代码
                             }
                         } catch (e) {
                             console.error('解析错误:', e);
@@ -233,5 +249,21 @@ function customMarkdownParser(markdown) {
     markdown = markdown.replace(/\n\n/gim, '</p><p>');
     markdown = markdown.replace(/\n/gim, '<br>');
 
-    return `<p>${markdown}</p>`;
+    return `<p>${markdown}</p>`;}
+
+function stopStreaming() {
+    if (abortController) {
+        abortController.abort();
+    }
+    if (reader) {
+        reader.cancel();  // 显式取消reader
+    }
+    isStreaming = false;
+    resetSubmitButton();
+}
+
+function resetSubmitButton() {
+    const submitBtn = document.getElementById('submit-btn');
+    submitBtn.textContent = '发送';
+    submitBtn.onclick = submitQuestion;
 }
